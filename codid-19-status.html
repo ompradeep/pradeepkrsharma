@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zxx" ng-app="covidApp">
+
+<head>
+    <title>Covid 19 India Status</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="utf-8" />
+    <meta name="keywords" content="Covid 19 status in india, codiv-19, corona, corona virus" />
+
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
+
+    <script>
+        addEventListener("load", function() {
+            setTimeout(hideURLbar, 0);
+        }, false);
+
+        function hideURLbar() {
+            window.scrollTo(0, 1);
+        }
+    </script>
+    <!-- Custom Theme files -->
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link href="css/style.css" type="text/css" rel="stylesheet" media="all">
+    <!-- font-awesome icons -->
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <!-- //Custom Theme files -->
+    <!-- online-fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu:400,500&display=swap" rel="stylesheet">
+
+
+</head>
+
+<body ng-controller="covidCtrl">
+    <script src='js/jquery.min.js'></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.7.9/angular.min.js"></script>
+
+    <body>
+        <div>
+
+
+            <!-- about -->
+            <section class="container">
+                <h2 class="w3_head mb-4">COVID 19 IN INDIA</h2>
+                <div>
+
+                    <nav>
+                        <div class="nav nav-tabs" id="nav-tab" role="tablist">
+                            <a class="nav-item nav-link active" id="nav-date-tab" data-toggle="tab" href="#nav-date" role="tab" aria-controls="nav-date" aria-selected="true">Date Wise</a>
+                            <a class="nav-item nav-link" id="nav-state-tab" data-toggle="tab" href="#nav-state" role="tab" aria-controls="nav-state" aria-selected="false">State Wise</a>
+                        </div>
+                    </nav>
+                    <div class="tab-content" id="nav-tabContent">
+                        <div class="tab-pane fade show active" id="nav-date" role="tabpanel" aria-labelledby="nav-date-tab">
+
+                            <table class="table m-t-10">
+                                <thead>
+                                    <tr>
+                                        <th class="small-td">#</th>
+                                        <th class="small-td">Date</th>
+                                        <th class="text-right small-th">Daily deceased</th>
+                                        <th class="text-right small-th">Daily recovered</th>
+                                        <th class="text-right small-th">Total confirmed</th>
+                                        <th class="text-right small-th">Total deceased</th>
+                                        <th class="text-right small-th">Total recovered</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="item in dateWiseData">
+                                        <th class="text-left small-td">{{$index+1}}.</th>
+                                        <th class="text-left small-td">{{item.date}}</th>
+                                        <th class="text-right small-td text-danger">{{item.dailydeceased}}</th>
+                                        <th class="text-right small-td">{{item.dailyrecovered}}</th>
+                                        <th class="text-right small-td text-danger">{{item.totalconfirmed}}</th>
+                                        <th class="text-right small-td">{{item.totaldeceased}}</th>
+                                        <th class="text-right small-td">{{item.totalrecovered}}</th>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="tab-pane fade" id="nav-state" role="tabpanel" aria-labelledby="nav-profile-tab">
+                            <!-- State wise -->
+                            <table class="table m-t-10">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th class="text-left small-th">State</th>
+                                        <th class="small-th">Date Time</th>
+                                        <th class="text-right small-th">Confirmed</th>
+                                        <th class="text-right small-th">Active</th>
+                                        <th class="text-right small-th">Deaths</th>
+                                        <th class="text-right small-th">Recovered</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr ng-repeat="item in stateWiseData" class="{{item.state == 'Total' ? 'row-total' : '' }}">
+                                        <th class="text-left small-td">{{$index+1}}.</th>
+                                        <th class="text-left small-td">{{item.state}}</th>
+                                        <th class="text-left small-td">{{item.lastupdatedtime}}</th>
+                                        <th class="text-right small-td text-danger">{{item.confirmed}}</th>
+                                        <th class="text-right small-td">{{item.active}}</th>
+                                        <th class="text-right small-td text-danger">{{item.deaths}}</th>
+                                        <th class="text-right small-td">{{item.recovered}}</th>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                        </div>
+                    </div>
+
+                </div>
+
+
+            </section>
+            <!-- // -->
+
+            <section class="container">
+                <br><br><br><br>
+                <p class="text-muted small">API Source : covid19india.org</p>
+                <br>
+            </section>
+
+        </div>
+
+    </body>
+
+
+
+    <script>
+        var app = angular.module('covidApp', []);
+        app.controller('covidCtrl', function($scope, $http) {
+
+            $scope.view = 'dateView';
+
+            $scope.toggleView = function(view) {
+                $scope.view = view;
+            }
+
+            $scope.getData = function() {
+                $http.get("https://api.covid19india.org/data.json")
+                    .then(function(response) {
+
+                        if (response.data.cases_time_series) {
+                            $scope.dateWiseData = response.data.cases_time_series.reverse();
+                        }
+
+                        if (response.data.statewise) {
+                            $scope.stateWiseData = response.data.statewise.reverse();
+                        }
+
+                    });
+            };
+
+            $scope.getData();
+
+            setInterval(function() {
+                $scope.getData();
+            }, 10000);
+
+        });
+    </script>
+
+
+    <style>
+        nav a {
+            color: #4a35bb;
+            font-weight: 300;
+            letter-spacing: 2px;
+            text-transform: capitalize;
+            font-size: 17px;
+            opacity: 1;
+        }
+        
+        .nav-tabs .nav-item.show .nav-link,
+        .nav-tabs .nav-link.active {
+            color: #ffffff;
+            background-color: #4a35bb;
+            border-color: #dee2e6 #dee2e6 #dee2e6;
+        }
+        
+        .row-total {
+            background: #e0e0e0;
+            font-size: 18px;
+        }
+        
+        .small-td {
+            padding: .25rem!important;
+            vertical-align: top;
+            border-top: 1px solid #dee2e6;
+            font-weight: 400;
+            font-size: 14px;
+        }
+        
+        .small-th {
+            padding: 0.5rem .25rem!important;
+        }
+    </style>
+
+</html>
