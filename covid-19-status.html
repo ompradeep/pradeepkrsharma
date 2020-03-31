@@ -44,6 +44,7 @@
                 <h2 class="w3_head mb-4">COVID 19 IN INDIA</h2>
                 <div>
 
+
                     <nav>
                         <div class="nav nav-tabs" id="nav-tab" role="tablist">
                             <a class="nav-item nav-link active" id="nav-date-tab" data-toggle="tab" href="#nav-date" role="tab" aria-controls="nav-date" aria-selected="true">Date Wise</a>
@@ -93,7 +94,7 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr ng-repeat="item in stateWiseData" class="{{item.state == 'Total' ? 'row-total' : '' }}">
+                                    <tr ng-repeat="item in stateWiseData | orderBy : 'state'" ng-if="item.state !== 'Total'">
                                         <th class="text-left small-td">{{$index+1}}.</th>
                                         <th class="text-left small-td">{{item.state}}</th>
                                         <th class="text-left small-td">{{item.lastupdatedtime}}</th>
@@ -102,6 +103,16 @@
                                         <th class="text-right small-td text-danger">{{item.deaths}}</th>
                                         <th class="text-right small-td">{{item.recovered}}</th>
                                     </tr>
+                                    <tr ng-repeat="item in stateWiseData" ng-if="item.state === 'Total'" class="row-total">
+                                        <th class="text-left small-td">{{$index+1}}.</th>
+                                        <th class="text-left small-td">{{item.state}}</th>
+                                        <th class="text-left small-td">{{item.lastupdatedtime}}</th>
+                                        <th class="text-right small-td text-danger">{{item.confirmed}}</th>
+                                        <th class="text-right small-td">{{item.active}}</th>
+                                        <th class="text-right small-td text-danger">{{item.deaths}}</th>
+                                        <th class="text-right small-td">{{item.recovered}}</th>
+                                    </tr>
+
                                 </tbody>
                             </table>
 
